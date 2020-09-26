@@ -4,12 +4,23 @@
     <!-- Your custom CSS and other imports here -->
 
     <style type="text/css" media="screen">
+      html, body {
+        width: 100vw;
+        height: 400px;
+        margin: 0;
+        padding: 0;
+      }
+
       #editor { 
-          position: absolute;
-          top: 0;
-          right: 0;
-          bottom: 0;
-          left: 0;
+        position: absolute;
+        height: 100%;
+        border: 1px solid #d4d4d4 !important;
+        margin: 0;
+        padding: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
       }
       </style>
 
@@ -22,32 +33,69 @@
 
    <div id="editor"></div>
    
-   <script src="https://pagecdn.io/lib/ace/1.4.12/ace.min.js" type="text/javascript" charset="utf-8"></script>
+   <script src="__shared/ace-builds/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 
   </body>
 
   <script type="text/javascript"> 
     var locale = Appian.getLocale(); //Returns the user's locale (eg. en-US). This accounts for system settings, user settings, etc.
     var accentColor = Appian.getAccentColor(); //Returns the accent color of the Appian environment in hexadecimal format
-    var documentType;
-    var value;
+    var required;
+    var height = 400;
+    var marginBelow = "NONE";
+    var mode = "javascript";
+    var text = "";
+    var loaded = false;
+    var editing = false;
 
     // Instantiate the editor
     var editor = ace.edit("editor");
-    editor.setTheme("ace/theme/monokai");
+    editor.setTheme("ace/theme/textmate");
 
-    // Handle changes
+    // Handle changes in the editor
     editor.session.on('change', function(delta) {
-      Appian.Component.saveValue('value', editor.getValue());
+      editing = true;
+      Appian.Component.saveValue('text', editor.getValue());
+      editing = false;
     });
 
     // Handle new values from SAIL (including initial load)
-    Appian.Component.onNewValue(function(allParameters) { 
-      // Set the document type
-      editor.session.setMode("ace/mode/" + allParameters['documentType'].toLowerCase());
+    Appian.Component.onNewValue(function(allParameters) {
+      required = allParameters.required;
+      marginBelow = allParameters['marginBelow'];
+
+      // Handle height from Appian
+      if (allParameters.height !== height) {
+        height = allParameters.height;
+        if (height === "auto") {
+          height = 400;
+        } else {
+          height = parseInt(height.replace(/px$/i, ""));
+        }
+
+        document.documentElement.setAttribute("style", "height: " + height + "px");
+        document.body.setAttribute("style", "height: " + height + "px");
+
+        if (marginBelow === "STANDARD")
+          height -= 15;
+        else
+          height -= 2;
+
+        document.getElementById('editor').setAttribute("style", "height: " + height + "px");
+        editor.resize();
+      }
+
+      // Handle readOnly
+      editor.setReadOnly(allParameters['readOnly']);
+      
+      editor.session.setMode("ace/mode/" + allParameters['mode']);
 
       // Set the text value
-      editor.session.setValue(allParameters['value']);
-    }); 
+      var cursor = editor.selection.getCursor();
+      editor.session.setValue(allParameters['text']);
+      editor.gotoLine(cursor.row + 1, cursor.column);
+
+      loaded = true;
+    });
   </script> 
 </html>

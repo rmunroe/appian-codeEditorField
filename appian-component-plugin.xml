@@ -11,12 +11,32 @@
     <supported-user-agents>chrome firefox ie11 edge safari mobile</supported-user-agents>
     <icon-file>code-json.svg</icon-file>
     <parameter>
-      <name>documentType</name>
+      <name>readOnly</name>
       <category>input-only</category>
-      <type>Text</type>
+      <type>Boolean</type>
     </parameter>
     <parameter>
-      <name>value</name>
+      <name>marginBelow</name>
+      <category>input-only</category>
+      <type>
+        <enum>
+          <choice>NONE</choice>
+          <choice>STANDARD</choice>
+        </enum>
+      </type>
+    </parameter>
+    <parameter>
+      <name>mode</name>
+      <category>input-only</category>
+      <type>
+        <enum>
+          <choice>javascript</choice>
+          <choice>json</choice>
+        </enum>
+      </type>
+    </parameter>
+    <parameter>
+      <name>text</name>
       <category>input-output</category>
       <type>Text</type>
     </parameter>

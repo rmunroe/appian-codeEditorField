@@ -1,0 +1,1 @@
+{"documentType": "javascript","text":"function foo(items) {\n var x = 'All this is syntax highlighted';\n return x;"}

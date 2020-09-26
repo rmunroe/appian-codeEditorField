@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Your custom CSS and other imports here -->
+
+    <style type="text/css" media="screen">
+      html, body {
+        width: 100vw;
+        height: 400px;
+        margin: 0;
+        padding: 0;
+      }
+
+      #editor { 
+        position: absolute;
+        height: 240px;
+        border: 1px solid #d4d4d4 !important;
+        margin: 0;
+        padding: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+      </style>
+
+    <!-- DO NOT EDIT THE FOLLOWING LINE-->
+    <script src='../Appian.js'></script> 
+  </head>
+
+  <body>
+   <!-- Your custom HTML code here -->
+
+   <div id="editor"></div>
+   
+   <script src="__shared/ace-builds/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+
+  </body>
+
+  <script type="text/javascript"> 
+    var locale = Appian.getLocale(); //Returns the user's locale (eg. en-US). This accounts for system settings, user settings, etc.
+    var accentColor = Appian.getAccentColor(); //Returns the accent color of the Appian environment in hexadecimal format
+    var required;
+    var height;
+    var mode = "javascript";
+    var text = "";
+
+    // Instantiate the editor
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/textmate");
+
+    // Handle changes in the editor
+    editor.session.on('change', function(delta) {
+      Appian.Component.saveValue('text', editor.getValue());
+    });
+
+    // Handle new values from SAIL (including initial load)
+    Appian.Component.onNewValue(function(allParameters) {
+      required = allParameters.required;
+
+      // Handle height from Appian
+      if (allParameters.height !== height) {
+        height = allParameters.height;
+        if (height === "auto") height = "400px";
+
+        // document.body.parentElement.style.height = height;
+        // document.body.style.height = height;
+        document.getElementById('editor').setAttribute("style", "height: " + height);
+        editor.resize();
+      }
+
+      // Set the document type
+      if (mode !== allParameters['documentType'].toLowerCase()) {
+        mode = allParameters['documentType'].toLowerCase();
+        editor.session.setMode("ace/mode/" + mode);
+      }
+
+      // Set the text value
+      if (allParameters['text'] !== editor.getValue())
+        editor.session.setValue(allParameters['text']);
+    }); 
+  </script> 
+</html>
