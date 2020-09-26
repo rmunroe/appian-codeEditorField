@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Your custom CSS and other imports here -->
+
+    <style type="text/css" media="screen">
+      #editor { 
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+      }
+      </style>
+
+    <!-- DO NOT EDIT THE FOLLOWING LINE-->
+    <script src='APPIAN_JS_SDK_URI'></script> 
+  </head>
+
+  <body>
+   <!-- Your custom HTML code here -->
+
+   <div id="editor"></div>
+   
+   <script src="https://pagecdn.io/lib/ace/1.4.12/ace.min.js" type="text/javascript" charset="utf-8"></script>
+
+  </body>
+
+  <script type="text/javascript"> 
+    var locale = Appian.getLocale(); //Returns the user's locale (eg. en-US). This accounts for system settings, user settings, etc.
+    var accentColor = Appian.getAccentColor(); //Returns the accent color of the Appian environment in hexadecimal format
+    var documentType;
+    var value;
+
+    // Instantiate the editor
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+
+    // Handle changes
+    editor.session.on('change', function(delta) {
+      Appian.Component.saveValue('value', editor.getValue());
+    });
+
+    // Handle new values from SAIL (including initial load)
+    Appian.Component.onNewValue(function(allParameters) { 
+      // Set the document type
+      editor.session.setMode("ace/mode/" + allParameters['documentType'].toLowerCase());
+
+      // Set the text value
+      editor.session.setValue(allParameters['value']);
+    }); 
+  </script> 
+</html>
