@@ -88,6 +88,12 @@
       // Handle readOnly
       editor.setReadOnly(allParameters['readOnly']);
       
+      // Set fontSize
+      var font = allParameters['fontSize'];
+      if (font === "") font = "13";
+      editor.setFontSize(parseInt(allParameters['fontSize']));
+
+      // Set mode
       editor.session.setMode("ace/mode/" + allParameters['mode']);
 
       // Set the text value

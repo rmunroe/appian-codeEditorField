@@ -26,6 +26,21 @@
       </type>
     </parameter>
     <parameter>
+      <name>fontSize</name>
+      <category>input-only</category>
+      <type>
+        <enum>
+          <choice>12</choice>
+          <choice>13</choice>
+          <choice>14</choice>
+          <choice>16</choice>
+          <choice>18</choice>
+          <choice>22</choice>
+          <choice>24</choice>
+        </enum>
+      </type>
+    </parameter>
+    <parameter>
       <name>mode</name>
       <category>input-only</category>
       <type>
