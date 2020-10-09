@@ -21,8 +21,11 @@
         right: 0;
         bottom: 0;
         left: 0;
+        font: 12px/normal 'source-code-pro', 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
       }
       </style>
+      
+      <script async="true" src="https://use.edgefonts.net/source-code-pro.js"></script>
 
     <!-- DO NOT EDIT THE FOLLOWING LINE-->
     <script src='APPIAN_JS_SDK_URI'></script> 
@@ -43,26 +46,46 @@
     var required;
     var height = 400;
     var marginBelow = "NONE";
-    var mode = "javascript";
+    var mode = "text";
+    var theme = "textmate";
+    var fontSize = "13";
+    var hideGutter = false;
+    var hideLineNumbers = false;
+    var disableCodeFolding = false;
+    var showPrintMargin = false;
+    var printMarginColumn = 80;
+    var tabSize = 2;
     var text = "";
+    
     var loaded = false;
     var editing = false;
 
     // Instantiate the editor
     var editor = ace.edit("editor");
-    editor.setTheme("ace/theme/textmate");
+    editor.setTheme("ace/theme/" + theme);
 
-    // Handle changes in the editor
+    // Set some defaults
+    editor.renderer.setShowGutter(!hideGutter);
+    editor.renderer.setHighlightGutterLine(!hideGutter);
+    editor.setOption('showLineNumbers', !hideLineNumbers);
+    editor.setShowPrintMargin(showPrintMargin);
+    editor.setOption('tabSize', tabSize);
+
+    // Handle changes in the editor, avoiding race condition
     editor.session.on('change', function(delta) {
       editing = true;
       Appian.Component.saveValue('text', editor.getValue());
       editing = false;
     });
-
+    
     // Handle new values from SAIL (including initial load)
     Appian.Component.onNewValue(function(allParameters) {
       required = allParameters.required;
       marginBelow = allParameters['marginBelow'];
+
+      if (!loaded) {
+        
+      }
 
       // Handle height from Appian
       if (allParameters.height !== height) {
@@ -87,14 +110,66 @@
 
       // Handle readOnly
       editor.setReadOnly(allParameters['readOnly']);
-      
-      // Set fontSize
-      var font = allParameters['fontSize'];
-      if (font === "") font = "13";
-      editor.setFontSize(parseInt(allParameters['fontSize']));
+
+      // Set hideGutter
+      if (hideGutter !== allParameters['hideGutter']) {
+        hideGutter = allParameters['hideGutter'];
+        editor.renderer.setShowGutter(!hideGutter);
+        editor.renderer.setHighlightGutterLine(!hideGutter);
+      }
+
+      // Set hideLineNumbers
+      if (hideLineNumbers !== allParameters['hideLineNumbers']) {
+        hideLineNumbers = allParameters['hideLineNumbers'];
+        editor.setOption('showLineNumbers', !hideLineNumbers);
+      }
+
+      // Set disableCodeFolding
+      if (disableCodeFolding !== allParameters['disableCodeFolding']) {
+        disableCodeFolding = allParameters['disableCodeFolding'];
+        editor.setShowFoldWidgets(!disableCodeFolding);
+      }
+
+      // Set tabSize
+      if (tabSize !== allParameters['tabSize']) {
+        tabSize = allParameters['tabSize'];
+        editor.setOption('tabSize', tabSize);
+      }
+
+      // Set showPrintMargin
+      if (showPrintMargin !== allParameters['showPrintMargin']) {
+        showPrintMargin = allParameters['showPrintMargin'];
+        editor.setShowPrintMargin(showPrintMargin);
+      }
+
+      // Set printMarginColumn
+      if (printMarginColumn !== allParameters['printMarginColumn']) {
+        printMarginColumn = allParameters['printMarginColumn'];
+        editor.setPrintMarginColumn(printMarginColumn);
+      }
 
       // Set mode
-      editor.session.setMode("ace/mode/" + allParameters['mode']);
+      if (mode !== allParameters['mode']) {
+        mode = allParameters['mode'];
+        editor.session.setMode("ace/mode/" + mode);
+      }
+
+      // Set theme
+      if (theme !== allParameters['theme'] && allParameters['theme'] !== "") {
+        theme = allParameters['theme'];
+        editor.setTheme("ace/theme/" + theme);
+      }
+
+      // Handle fontSize
+      if (fontSize !== allParameters['fontSize'] || !loaded) {
+        fontSize = allParameters['fontSize'];
+        if (fontSize === "") fontSize = "13";
+        editor.setFontSize(parseInt(fontSize));
+      }
+
+      // Workaround. "Trick" Ace into resetting the font size to the current size. Ace resets it to the default on mode other property changes. 
+      editor.setFontSize(null);
+      editor.setFontSize(parseInt(fontSize));
 
       // Set the text value
       var cursor = editor.selection.getCursor();
