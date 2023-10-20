@@ -87,11 +87,22 @@
         
       }
 
+      // Handle fontSize
+      if (fontSize !== allParameters['fontSize'] || !loaded) {
+        fontSize = allParameters['fontSize'];
+        if (fontSize === "") fontSize = "13";
+        editor.setFontSize(parseInt(fontSize));
+      }
+
       // Handle height from Appian
       if (allParameters.height !== height) {
         height = allParameters.height;
         if (height === "auto") {
-          height = 400;
+          if (allParameters['readOnly']) {
+            height = allParameters['text'].split(/\r\n|\r|\n/).length * fontSize;
+          } else {
+            height = 400;
+          }
         } else {
           height = parseInt(height.replace(/px$/i, ""));
         }
@@ -158,13 +169,6 @@
       if (theme !== allParameters['theme'] && allParameters['theme'] !== "") {
         theme = allParameters['theme'];
         editor.setTheme("ace/theme/" + theme);
-      }
-
-      // Handle fontSize
-      if (fontSize !== allParameters['fontSize'] || !loaded) {
-        fontSize = allParameters['fontSize'];
-        if (fontSize === "") fontSize = "13";
-        editor.setFontSize(parseInt(fontSize));
       }
 
       // Workaround. "Trick" Ace into resetting the font size to the current size. Ace resets it to the default on mode other property changes. 
