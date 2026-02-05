@@ -98,8 +98,8 @@ function registerSailLanguage() {
         // Dot notation property access: .fieldName
         [/\.([a-zA-Z_]\w*)/, 'variable.property'],
 
-        // Unqualified function call: name(
-        [/[a-zA-Z_]\w*(?=\s*\()/, 'function'],
+        // Unqualified function call: name( -- colored same as fn! functions
+        [/[a-zA-Z_]\w*(?=\s*\()/, 'function.standard'],
 
         // Other identifiers
         [/[a-zA-Z_]\w*/, 'identifier']
