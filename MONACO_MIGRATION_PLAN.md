@@ -466,21 +466,21 @@ Monaco uses specific language IDs. Key languages to support:
 
 ## Implementation Checklist
 
-- [ ] Create `v2` git branch
-- [ ] Download Monaco Editor to `src/__shared/monaco-editor/vs/`
-- [ ] Create `src/codeEditorField/v2/` folder
-- [ ] Create `themes.js` with custom themes (monokai, dracula, github, solarized-dark, solarized-light, nord, tomorrow-night, cobalt, twilight)
-- [ ] Create `codeEditorFieldV2_en_US.properties`
-- [ ] Copy `code-json.svg` from v1
-- [ ] Update `appian-component-plugin.xml` with v2 component definition
-- [ ] Implement `index.html` - standard editor mode
+- [x] Create `v2` git branch
+- [x] Download Monaco Editor (v0.55.1) to `src/__shared/monaco-editor/vs/`
+- [x] Create `src/codeEditorField/v2/` folder
+- [x] Create `themes.js` with custom themes (monokai, dracula, github, solarized-dark, solarized-light, nord, tomorrow-night, cobalt, twilight)
+- [x] Create `codeEditorFieldV2_en_US.properties`
+- [x] Copy `code-json.svg` from v1
+- [x] Update `appian-component-plugin.xml` with v2 component definition
+- [x] Implement `index.html` - standard editor mode
+- [x] Implement diff editor mode
 - [ ] Test standard editor functionality
-- [ ] Implement diff editor mode
 - [ ] Test diff editor functionality
 - [ ] Test all custom themes
 - [ ] Test height variations
 - [ ] Verify no memory leaks on editor switching
-- [ ] Update documentation
+- [ ] Merge `v2` branch to `master` when ready
 
 ---
 
