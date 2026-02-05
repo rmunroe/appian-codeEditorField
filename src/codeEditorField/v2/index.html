@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style type="text/css" media="screen">
+      html, body {
+        width: 100%;
+        height: 400px;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      #container {
+        width: 100%;
+        height: 100%;
+        border: 1px solid #d4d4d4;
+        box-sizing: border-box;
+      }
+    </style>
+
+    <!-- DO NOT EDIT THE FOLLOWING LINE -->
+    <script src='APPIAN_JS_SDK_URI'></script>
+  </head>
+
+  <body>
+    <div id="container"></div>
+
+    <script src="__shared/monaco-editor/vs/loader.js"></script>
+    <script src="themes.js"></script>
+  </body>
+
+  <script type="text/javascript">
+    // State variables
+    var editor = null;
+    var diffEditor = null;
+    var currentEditorMode = null; // 'editor' or 'diff'
+    var loaded = false;
+    var updating = false;
+
+    // Parameter cache
+    var params = {
+      editorMode: 'editor',
+      language: 'plaintext',
+      theme: 'vs',
+      fontSize: 13,
+      readOnly: false,
+      hideGutter: false,
+      hideLineNumbers: false,
+      disableCodeFolding: false,
+      showPrintMargin: false,
+      printMarginColumn: 80,
+      tabSize: 2,
+      marginBelow: 'NONE',
+      text: '',
+      originalValue: '',
+      modifiedValue: '',
+      diffViewType: 'sideBySide',
+      height: 400
+    };
+
+    // Configure AMD loader for Monaco
+    require.config({
+      paths: { 'vs': '__shared/monaco-editor/vs' }
+    });
+
+    // Load Monaco and initialize
+    require(['vs/editor/editor.main'], function() {
+      // Register custom themes
+      registerCustomThemes();
+
+      // Initialize Appian component listener
+      Appian.Component.onNewValue(handleNewValue);
+    });
+
+    /**
+     * Handle new values from SAIL
+     */
+    function handleNewValue(allParameters) {
+      var needsRecreate = false;
+
+      // Check if editor mode changed
+      var newEditorMode = allParameters['editorMode'] || 'editor';
+      if (currentEditorMode !== newEditorMode) {
+        needsRecreate = true;
+      }
+
+      // Check if diff view type changed (requires recreate in diff mode)
+      if (newEditorMode === 'diff' && params.diffViewType !== allParameters['diffViewType']) {
+        needsRecreate = true;
+      }
+
+      // Update parameter cache
+      updateParams(allParameters);
+
+      // Handle height
+      handleHeight(allParameters);
+
+      if (needsRecreate || !loaded) {
+        // Dispose existing editors and create new one
+        disposeEditors();
+
+        if (params.editorMode === 'diff') {
+          createDiffEditor();
+        } else {
+          createStandardEditor();
+        }
+
+        currentEditorMode = params.editorMode;
+      } else {
+        // Update existing editor
+        updateEditor();
+      }
+
+      loaded = true;
+    }
+
+    /**
+     * Update parameter cache from Appian parameters
+     */
+    function updateParams(allParameters) {
+      params.editorMode = allParameters['editorMode'] || 'editor';
+      params.language = allParameters['language'] || 'plaintext';
+      params.theme = allParameters['theme'] || 'vs';
+      params.fontSize = parseInt(allParameters['fontSize']) || 13;
+      params.readOnly = allParameters['readOnly'] || false;
+      params.hideGutter = allParameters['hideGutter'] || false;
+      params.hideLineNumbers = allParameters['hideLineNumbers'] || false;
+      params.disableCodeFolding = allParameters['disableCodeFolding'] || false;
+      params.showPrintMargin = allParameters['showPrintMargin'] || false;
+      params.printMarginColumn = allParameters['printMarginColumn'] || 80;
+      params.tabSize = allParameters['tabSize'] || 2;
+      params.marginBelow = allParameters['marginBelow'] || 'NONE';
+      params.text = allParameters['text'] || '';
+      params.originalValue = allParameters['originalValue'] || '';
+      params.modifiedValue = allParameters['modifiedValue'] || '';
+      params.diffViewType = allParameters['diffViewType'] || 'sideBySide';
+    }
+
+    /**
+     * Handle container height based on Appian height parameter
+     */
+    function handleHeight(allParameters) {
+      var height = allParameters.height;
+
+      if (height === 'auto') {
+        if (params.readOnly) {
+          // Calculate height based on content
+          var content = params.editorMode === 'diff' ? params.modifiedValue : params.text;
+          var lineCount = (content || '').split(/\r\n|\r|\n/).length;
+          height = Math.max(lineCount * params.fontSize * 1.5, 100);
+        } else {
+          height = 400;
+        }
+      } else if (typeof height === 'string') {
+        height = parseInt(height.replace(/px$/i, ''));
+      }
+
+      params.height = height;
+
+      // Set document height
+      document.documentElement.style.height = height + 'px';
+      document.body.style.height = height + 'px';
+
+      // Adjust for margin
+      var containerHeight = height;
+      if (params.marginBelow === 'STANDARD') {
+        containerHeight -= 15;
+      } else {
+        containerHeight -= 2;
+      }
+
+      document.getElementById('container').style.height = containerHeight + 'px';
+
+      // Trigger layout update if editors exist
+      if (editor) editor.layout();
+      if (diffEditor) diffEditor.layout();
+    }
+
+    /**
+     * Create standard Monaco editor
+     */
+    function createStandardEditor() {
+      var container = document.getElementById('container');
+
+      editor = monaco.editor.create(container, {
+        value: params.text,
+        language: params.language,
+        theme: params.theme,
+        fontSize: params.fontSize,
+        readOnly: params.readOnly,
+        lineNumbers: params.hideLineNumbers ? 'off' : 'on',
+        glyphMargin: !params.hideGutter,
+        folding: !params.disableCodeFolding,
+        lineDecorationsWidth: params.hideGutter ? 0 : 10,
+        lineNumbersMinChars: params.hideGutter ? 0 : 3,
+        tabSize: params.tabSize,
+        rulers: params.showPrintMargin ? [params.printMarginColumn] : [],
+        minimap: { enabled: false },
+        scrollBeyondLastLine: false,
+        automaticLayout: true,
+        wordWrap: 'off',
+        renderLineHighlight: 'line'
+      });
+
+      // Handle content changes - save back to SAIL
+      editor.onDidChangeModelContent(function() {
+        if (!updating) {
+          Appian.Component.saveValue('text', editor.getValue());
+        }
+      });
+    }
+
+    /**
+     * Create Monaco diff editor
+     */
+    function createDiffEditor() {
+      var container = document.getElementById('container');
+
+      diffEditor = monaco.editor.createDiffEditor(container, {
+        theme: params.theme,
+        fontSize: params.fontSize,
+        readOnly: params.readOnly,
+        renderSideBySide: params.diffViewType === 'sideBySide',
+        originalEditable: false, // Original side is never editable
+        enableSplitViewResizing: true,
+        glyphMargin: !params.hideGutter,
+        folding: !params.disableCodeFolding,
+        lineNumbers: params.hideLineNumbers ? 'off' : 'on',
+        lineDecorationsWidth: params.hideGutter ? 0 : 10,
+        tabSize: params.tabSize,
+        rulers: params.showPrintMargin ? [params.printMarginColumn] : [],
+        minimap: { enabled: false },
+        scrollBeyondLastLine: false,
+        automaticLayout: true
+      });
+
+      // Create models for original and modified content
+      var originalModel = monaco.editor.createModel(params.originalValue, params.language);
+      var modifiedModel = monaco.editor.createModel(params.modifiedValue, params.language);
+
+      diffEditor.setModel({
+        original: originalModel,
+        modified: modifiedModel
+      });
+
+      // Ensure modified editor respects readOnly setting
+      diffEditor.getModifiedEditor().updateOptions({ readOnly: params.readOnly });
+
+      // Handle modified content changes - save back to SAIL
+      diffEditor.getModifiedEditor().onDidChangeModelContent(function() {
+        if (!updating) {
+          var value = diffEditor.getModifiedEditor().getValue();
+          Appian.Component.saveValue('modifiedValue', value);
+        }
+      });
+    }
+
+    /**
+     * Update existing editor with new parameters
+     */
+    function updateEditor() {
+      updating = true;
+
+      if (editor) {
+        // Update options
+        editor.updateOptions({
+          theme: params.theme,
+          fontSize: params.fontSize,
+          readOnly: params.readOnly,
+          lineNumbers: params.hideLineNumbers ? 'off' : 'on',
+          glyphMargin: !params.hideGutter,
+          folding: !params.disableCodeFolding,
+          lineDecorationsWidth: params.hideGutter ? 0 : 10,
+          tabSize: params.tabSize,
+          rulers: params.showPrintMargin ? [params.printMarginColumn] : []
+        });
+
+        // Update language if changed
+        var model = editor.getModel();
+        if (model && monaco.editor.getModel(model.uri)) {
+          monaco.editor.setModelLanguage(model, params.language);
+        }
+
+        // Update content, preserving cursor position
+        var position = editor.getPosition();
+        var scrollTop = editor.getScrollTop();
+        var currentValue = editor.getValue();
+
+        if (currentValue !== params.text) {
+          editor.setValue(params.text);
+          if (position) {
+            editor.setPosition(position);
+          }
+          editor.setScrollTop(scrollTop);
+        }
+      }
+
+      if (diffEditor) {
+        // Update diff editor options
+        diffEditor.updateOptions({
+          theme: params.theme,
+          fontSize: params.fontSize,
+          readOnly: params.readOnly,
+          glyphMargin: !params.hideGutter,
+          folding: !params.disableCodeFolding,
+          lineNumbers: params.hideLineNumbers ? 'off' : 'on',
+          lineDecorationsWidth: params.hideGutter ? 0 : 10,
+          tabSize: params.tabSize,
+          rulers: params.showPrintMargin ? [params.printMarginColumn] : []
+        });
+
+        // Update modified editor read-only state
+        diffEditor.getModifiedEditor().updateOptions({ readOnly: params.readOnly });
+
+        // Update models
+        var model = diffEditor.getModel();
+        if (model) {
+          // Update language
+          monaco.editor.setModelLanguage(model.original, params.language);
+          monaco.editor.setModelLanguage(model.modified, params.language);
+
+          // Update content
+          var modifiedEditor = diffEditor.getModifiedEditor();
+          var position = modifiedEditor.getPosition();
+          var scrollTop = modifiedEditor.getScrollTop();
+
+          if (model.original.getValue() !== params.originalValue) {
+            model.original.setValue(params.originalValue);
+          }
+
+          if (model.modified.getValue() !== params.modifiedValue) {
+            model.modified.setValue(params.modifiedValue);
+            if (position) {
+              modifiedEditor.setPosition(position);
+            }
+            modifiedEditor.setScrollTop(scrollTop);
+          }
+        }
+      }
+
+      updating = false;
+    }
+
+    /**
+     * Dispose existing editors and their models
+     */
+    function disposeEditors() {
+      if (editor) {
+        editor.dispose();
+        editor = null;
+      }
+
+      if (diffEditor) {
+        var model = diffEditor.getModel();
+        if (model) {
+          if (model.original) model.original.dispose();
+          if (model.modified) model.modified.dispose();
+        }
+        diffEditor.dispose();
+        diffEditor = null;
+      }
+    }
+  </script>
+</html>
