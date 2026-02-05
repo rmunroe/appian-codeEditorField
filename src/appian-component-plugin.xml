@@ -442,6 +442,7 @@
           <choice>r</choice>
           <choice>ruby</choice>
           <choice>rust</choice>
+          <choice>sail</choice>
           <choice>scala</choice>
           <choice>scss</choice>
           <choice>shell</choice>

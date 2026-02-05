@@ -27,6 +27,7 @@
 
     <script src="__shared/monaco-editor/vs/loader.js"></script>
     <script src="themes.js"></script>
+    <script src="sail-language.js"></script>
   </body>
 
   <script type="text/javascript">
@@ -65,8 +66,9 @@
 
     // Load Monaco and initialize
     require(['vs/editor/editor.main'], function() {
-      // Register custom themes
+      // Register custom themes and SAIL language
       registerCustomThemes();
+      registerSailLanguage();
 
       // Initialize Appian component listener
       Appian.Component.onNewValue(handleNewValue);

@@ -32,7 +32,18 @@ var customThemes = {
       { token: 'delimiter.bracket', foreground: 'F8F8F2' },
       { token: 'operator', foreground: 'F92672' },
       { token: 'identifier', foreground: 'F8F8F2' },
-      { token: 'regexp', foreground: 'E6DB74' }
+      { token: 'regexp', foreground: 'E6DB74' },
+      /* SAIL tokens */
+      { token: 'keyword.function.system', foreground: 'F92672' },
+      { token: 'keyword.function.standard', foreground: 'F92672' },
+      { token: 'keyword.reference', foreground: 'F92672' },
+      { token: 'keyword.constant', foreground: 'F92672' },
+      { token: 'keyword.parameter', foreground: 'FD971F' },
+      { token: 'keyword.variable', foreground: 'FD971F' },
+      { token: 'function.system', foreground: 'A6E22E' },
+      { token: 'function.standard', foreground: '66D9EF' },
+      { token: 'function.reference', foreground: 'E6DB74' },
+      { token: 'variable.property', foreground: 'A6E22E' }
     ],
     colors: {
       'editor.background': '#272822',
@@ -79,7 +90,18 @@ var customThemes = {
       { token: 'delimiter', foreground: 'F8F8F2' },
       { token: 'operator', foreground: 'FF79C6' },
       { token: 'identifier', foreground: 'F8F8F2' },
-      { token: 'regexp', foreground: 'F1FA8C' }
+      { token: 'regexp', foreground: 'F1FA8C' },
+      /* SAIL tokens */
+      { token: 'keyword.function.system', foreground: 'FF79C6' },
+      { token: 'keyword.function.standard', foreground: 'FF79C6' },
+      { token: 'keyword.reference', foreground: 'FF79C6' },
+      { token: 'keyword.constant', foreground: 'FF79C6' },
+      { token: 'keyword.parameter', foreground: 'FFB86C' },
+      { token: 'keyword.variable', foreground: 'FFB86C' },
+      { token: 'function.system', foreground: '50FA7B' },
+      { token: 'function.standard', foreground: '8BE9FD' },
+      { token: 'function.reference', foreground: 'F1FA8C' },
+      { token: 'variable.property', foreground: '50FA7B' }
     ],
     colors: {
       'editor.background': '#282A36',
@@ -126,7 +148,18 @@ var customThemes = {
       { token: 'delimiter', foreground: '24292E' },
       { token: 'operator', foreground: 'D73A49' },
       { token: 'identifier', foreground: '24292E' },
-      { token: 'regexp', foreground: '032F62' }
+      { token: 'regexp', foreground: '032F62' },
+      /* SAIL tokens */
+      { token: 'keyword.function.system', foreground: 'D73A49' },
+      { token: 'keyword.function.standard', foreground: 'D73A49' },
+      { token: 'keyword.reference', foreground: 'D73A49' },
+      { token: 'keyword.constant', foreground: 'D73A49' },
+      { token: 'keyword.parameter', foreground: 'E36209' },
+      { token: 'keyword.variable', foreground: 'E36209' },
+      { token: 'function.system', foreground: '6F42C1' },
+      { token: 'function.standard', foreground: '005CC5' },
+      { token: 'function.reference', foreground: '22863A' },
+      { token: 'variable.property', foreground: '6F42C1' }
     ],
     colors: {
       'editor.background': '#FFFFFF',
@@ -173,7 +206,18 @@ var customThemes = {
       { token: 'delimiter', foreground: '839496' },
       { token: 'operator', foreground: '859900' },
       { token: 'identifier', foreground: '839496' },
-      { token: 'regexp', foreground: 'DC322F' }
+      { token: 'regexp', foreground: 'DC322F' },
+      /* SAIL tokens */
+      { token: 'keyword.function.system', foreground: '859900' },
+      { token: 'keyword.function.standard', foreground: '859900' },
+      { token: 'keyword.reference', foreground: '859900' },
+      { token: 'keyword.constant', foreground: '859900' },
+      { token: 'keyword.parameter', foreground: 'CB4B16' },
+      { token: 'keyword.variable', foreground: 'CB4B16' },
+      { token: 'function.system', foreground: '268BD2' },
+      { token: 'function.standard', foreground: '2AA198' },
+      { token: 'function.reference', foreground: 'B58900' },
+      { token: 'variable.property', foreground: '268BD2' }
     ],
     colors: {
       'editor.background': '#002B36',
@@ -220,7 +264,18 @@ var customThemes = {
       { token: 'delimiter', foreground: '657B83' },
       { token: 'operator', foreground: '859900' },
       { token: 'identifier', foreground: '657B83' },
-      { token: 'regexp', foreground: 'DC322F' }
+      { token: 'regexp', foreground: 'DC322F' },
+      /* SAIL tokens */
+      { token: 'keyword.function.system', foreground: '859900' },
+      { token: 'keyword.function.standard', foreground: '859900' },
+      { token: 'keyword.reference', foreground: '859900' },
+      { token: 'keyword.constant', foreground: '859900' },
+      { token: 'keyword.parameter', foreground: 'CB4B16' },
+      { token: 'keyword.variable', foreground: 'CB4B16' },
+      { token: 'function.system', foreground: '268BD2' },
+      { token: 'function.standard', foreground: '2AA198' },
+      { token: 'function.reference', foreground: 'B58900' },
+      { token: 'variable.property', foreground: '268BD2' }
     ],
     colors: {
       'editor.background': '#FDF6E3',
@@ -267,7 +322,18 @@ var customThemes = {
       { token: 'delimiter', foreground: 'ECEFF4' },
       { token: 'operator', foreground: '81A1C1' },
       { token: 'identifier', foreground: 'D8DEE9' },
-      { token: 'regexp', foreground: 'EBCB8B' }
+      { token: 'regexp', foreground: 'EBCB8B' },
+      /* SAIL tokens */
+      { token: 'keyword.function.system', foreground: '81A1C1' },
+      { token: 'keyword.function.standard', foreground: '81A1C1' },
+      { token: 'keyword.reference', foreground: '81A1C1' },
+      { token: 'keyword.constant', foreground: '81A1C1' },
+      { token: 'keyword.parameter', foreground: 'EBCB8B' },
+      { token: 'keyword.variable', foreground: 'EBCB8B' },
+      { token: 'function.system', foreground: '88C0D0' },
+      { token: 'function.standard', foreground: '8FBCBB' },
+      { token: 'function.reference', foreground: 'A3BE8C' },
+      { token: 'variable.property', foreground: '88C0D0' }
     ],
     colors: {
       'editor.background': '#2E3440',
@@ -314,7 +380,18 @@ var customThemes = {
       { token: 'delimiter', foreground: 'C5C8C6' },
       { token: 'operator', foreground: '8ABEB7' },
       { token: 'identifier', foreground: 'C5C8C6' },
-      { token: 'regexp', foreground: 'B5BD68' }
+      { token: 'regexp', foreground: 'B5BD68' },
+      /* SAIL tokens */
+      { token: 'keyword.function.system', foreground: 'B294BB' },
+      { token: 'keyword.function.standard', foreground: 'B294BB' },
+      { token: 'keyword.reference', foreground: 'B294BB' },
+      { token: 'keyword.constant', foreground: 'B294BB' },
+      { token: 'keyword.parameter', foreground: 'DE935F' },
+      { token: 'keyword.variable', foreground: 'DE935F' },
+      { token: 'function.system', foreground: '81A2BE' },
+      { token: 'function.standard', foreground: '8ABEB7' },
+      { token: 'function.reference', foreground: 'F0C674' },
+      { token: 'variable.property', foreground: '81A2BE' }
     ],
     colors: {
       'editor.background': '#1D1F21',
@@ -361,7 +438,18 @@ var customThemes = {
       { token: 'delimiter', foreground: 'FFFFFF' },
       { token: 'operator', foreground: 'FF9D00' },
       { token: 'identifier', foreground: 'FFFFFF' },
-      { token: 'regexp', foreground: '80FFBB' }
+      { token: 'regexp', foreground: '80FFBB' },
+      /* SAIL tokens */
+      { token: 'keyword.function.system', foreground: 'FF9D00' },
+      { token: 'keyword.function.standard', foreground: 'FF9D00' },
+      { token: 'keyword.reference', foreground: 'FF9D00' },
+      { token: 'keyword.constant', foreground: 'FF9D00' },
+      { token: 'keyword.parameter', foreground: 'FF628C' },
+      { token: 'keyword.variable', foreground: 'FF628C' },
+      { token: 'function.system', foreground: 'FFEE80' },
+      { token: 'function.standard', foreground: '80FFBB' },
+      { token: 'function.reference', foreground: '3AD900' },
+      { token: 'variable.property', foreground: 'FFEE80' }
     ],
     colors: {
       'editor.background': '#002240',
@@ -408,7 +496,18 @@ var customThemes = {
       { token: 'delimiter', foreground: 'F8F8F8' },
       { token: 'operator', foreground: 'CDA869' },
       { token: 'identifier', foreground: 'F8F8F8' },
-      { token: 'regexp', foreground: 'E9C062' }
+      { token: 'regexp', foreground: 'E9C062' },
+      /* SAIL tokens */
+      { token: 'keyword.function.system', foreground: 'CDA869' },
+      { token: 'keyword.function.standard', foreground: 'CDA869' },
+      { token: 'keyword.reference', foreground: 'CDA869' },
+      { token: 'keyword.constant', foreground: 'CDA869' },
+      { token: 'keyword.parameter', foreground: '7587A6' },
+      { token: 'keyword.variable', foreground: '7587A6' },
+      { token: 'function.system', foreground: '9B859D' },
+      { token: 'function.standard', foreground: 'CF6A4C' },
+      { token: 'function.reference', foreground: '8F9D6A' },
+      { token: 'variable.property', foreground: '9B859D' }
     ],
     colors: {
       'editor.background': '#141414',
